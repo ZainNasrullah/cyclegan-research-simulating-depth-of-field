@@ -4,3 +4,10 @@ dataset-preparation/selfies/
 
 get-dataset-flickr/bokeh_downloads/
 get-dataset-flickr/iphone_downloads/
+
+person-segmentation-deeplabv3/deeplab/deeplabv3_pascal_trainval/
+person-segmentation-deeplabv3/deeplab/mobilenetv2_coco_voctrainaug/
+person-segmentation-deeplabv3/deeplab/xception_coco_voctrainval/
+
+CycleGAN-TensorFlow/data/
+CycleGAN-TensorFlow/checkpoints/
