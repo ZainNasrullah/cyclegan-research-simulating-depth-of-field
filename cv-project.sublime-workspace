@@ -1,0 +1,294 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"log_mle",
+				"log_mle_denomenator\tstatement"
+			],
+			[
+				"log_ml",
+				"log_mle_numerator\tstatement"
+			],
+			[
+				"except",
+				"except"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 400.0,
+		"last_filter": "remo",
+		"selected_items":
+		[
+			[
+				"remo",
+				"Package Control: Remove Package"
+			],
+			[
+				"auto",
+				"Anaconda: Autoformat PEP8 Errors"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"install p",
+				"Package Control: Install Package"
+			],
+			[
+				"theme",
+				"UI: Select Theme"
+			],
+			[
+				"lint",
+				"Anaconda: Enable linting on this file"
+			],
+			[
+				"packa",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 432.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Z/CV-Project"
+	],
+	"file_history":
+	[
+		"/Z/Sublime Text 3/sublime.py",
+		"/Z/Downloads/Chrome/Selfie-dataset.tar/CV-Project/person-segmentation-deeplabv3/deeplab/inference.py",
+		"/C/Users/Zain/AppData/Roaming/Sublime Text 3/Packages/User/Anaconda.sublime-settings",
+		"/C/Users/Zain/AppData/Roaming/Sublime Text 3/Packages/User/SublimeLinter.sublime-settings",
+		"/C/Users/Zain/AppData/Roaming/Sublime Text 3/Packages/Anaconda/Anaconda.sublime-settings",
+		"/C/Users/Zain/AppData/Roaming/Sublime Text 3/Packages/User/JSON.sublime-settings",
+		"/Z/Downloads/Chrome/Selfie-dataset.tar/CV-Project/models/research/deeplab/core/feature_extractor.py",
+		"/Z/Downloads/Chrome/Selfie-dataset.tar/CV-Project/models/research/deeplab/inference.py",
+		"/Z/Downloads/Chrome/Selfie-dataset.tar/CV-Project/models/research/setup.py",
+		"/Z/Downloads/Chrome/Selfie-dataset.tar/Selfie-dataset/CV-Project-dataset-preparation/prepare_data.py",
+		"/Z/Downloads/Chrome/Selfie-dataset.tar/Selfie-dataset/CycleGAN-TensorFlow/ops.py",
+		"/Z/Downloads/Chrome/Selfie-dataset.tar/Selfie-dataset/CycleGAN-TensorFlow/train.py",
+		"/Z/Downloads/Chrome/Selfie-dataset.tar/Selfie-dataset/CycleGAN-TensorFlow/generator.py",
+		"/Z/Downloads/Chrome/Selfie-dataset.tar/Selfie-dataset/CycleGAN-TensorFlow/model.py",
+		"/Z/Downloads/Chrome/Selfie-dataset.tar/Selfie-dataset/flickr/python-flickr-image-downloader/flickrDownloader/flickrDownloader.py",
+		"/Z/Downloads/Chrome/Selfie-dataset.tar/Selfie-dataset/flickr/python-flickr-image-downloader/main_usage_examples.py",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Reddit-Political-Persuasion/submit/a1_preproc.py",
+		"/Z/Downloads/Chrome/a1_preproc.py",
+		"/Z/Downloads/Chrome/Selfie-dataset.tar/Selfie-dataset/flickr/python-flickr-image-downloader/flickrDownloader/utils.py",
+		"/Z/Downloads/Chrome/Selfie-dataset.tar/Selfie-dataset/flickr/python-flickr-image-downloader/setup.py",
+		"/Z/Downloads/Chrome/Selfie-dataset.tar/Selfie-dataset/CycleGAN-TensorFlow/build_data.py",
+		"/Z/Downloads/Chrome/Selfie-dataset.tar/Selfie-dataset/cyclegan-1/cyclegan_datasets.py",
+		"/G/OneDrive - University of Toronto/Other Projects/fb-scrape/FBMS/fbms.py",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/code/decode.py",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/code/perplexity.py",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/code/bonus.py",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/code/evalAlign.py",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/code/align_ibm1.py",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/code/log_prob.py",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/code/lm_train.py",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/code/preprocess.py",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/nmt/nmt/nmt.py",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/nmt/nmt/nmt_data/train.e",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/nmt/nmt/nmt_data/test.e",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/nmt/nmt/nmt_model/output_infer",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/nmt/nmt/nmt_data/vocab.f",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/code/test.e",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/code/sentences.e",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/code/vocab.en",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/code/bleu.py",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/code/preplexity.py",
+		"/Z/Downloads/Chrome/Selfie-dataset.tar/Selfie-dataset/flickr/python-flickr-image-downloader/links.txt",
+		"/Z/Downloads/Chrome/Selfie-dataset.tar/Selfie-dataset/flickr/python-flickr-image-downloader/flickrDownloader/__init__.py",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/code/Task5.txt",
+		"/C/Users/Zain/AppData/Local/Temp/Temp1_EnhanceNet_code.zip/enhancenet_pretrained/nnlib.py",
+		"/C/Users/Zain/AppData/Local/Temp/Temp1_EnhanceNet_code.zip/enhancenet_pretrained/enhancenet.py",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/data/Toy/answer.key",
+		"/G/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/data/Toy/toy.e",
+		"/C/Users/zainn/AppData/Roaming/Sublime Text 3/Packages/Anaconda/Anaconda.sublime-settings",
+		"/D/OneDrive - University of Toronto/MScAC/Job Postings/Statements of Interest/template",
+		"/D/OneDrive - University of Toronto/MScAC/Job Postings/Statements of Interest/loblaws",
+		"/D/OneDrive - University of Toronto/MScAC/Job Postings/Statements of Interest/PwC",
+		"/D/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/data/Hansard/Testing/hansard.36.2.house.debates.058.f",
+		"/D/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/data/Hansard/Testing/Task5.f",
+		"/D/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/data/Hansard/Training/hansard.36.1.house.debates.001.e",
+		"/D/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/data/Hansard/Testing/Task5.google.e",
+		"/D/OneDrive - University of Toronto/MScAC/ML in Computer Vision/Reading/README.md",
+		"/D/OneDrive - University of Toronto/TensorFlow/First Try/tensorflow_demo/helloworld.py",
+		"/D/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/data/Hansard/Training/hansard.36.1.house.debates.004.e",
+		"/D/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/data/Hansard/Training/hansard.36.1.house.debates.003.e",
+		"/D/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/data/Hansard/Training/hansard.36.1.house.debates.002.e",
+		"/D/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/data/Toy/answer.key",
+		"/D/OneDrive - University of Toronto/MScAC/NLP/NLP-Machine-Translation/data/Toy/toy.e",
+		"/C/Users/zainn/AppData/Roaming/Sublime Text 3/Packages/User/Anaconda.sublime-settings",
+		"/D/OneDrive - University of Toronto/Other Projects/robert-ai/main.py",
+		"/C/Users/zainn/nlp/NLP-Reddit-Political-Persuasion/code/a1_classify.py"
+	],
+	"find":
+	{
+		"height": 28.0
+	},
+	"find_in_files":
+	{
+		"height": 208.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 28.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.SublimeLinter":
+	{
+		"height": 0.0
+	},
+	"output.SublimeLinter Messages":
+	{
+		"height": 128.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.mdpopups":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "cv-project.sublime-project",
+	"replace":
+	{
+		"height": 52.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 1000.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"D:\\OneDrive - University of Toronto\\MScAC\\Job Postings\\Statements of Interest\\jobs.sublime-project"
+			]
+		],
+		"width": 760.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 310.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
