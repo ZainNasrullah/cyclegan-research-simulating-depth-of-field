@@ -1,6 +1,6 @@
 dataset-preparation/bokeh
+/
+dataset-preparation/selfies/
 
-dataset-preparation/selfies
-
-get-dataset-flickr/bokeh_downloads
-get-dataset-flickr/iphone_downloads
+get-dataset-flickr/bokeh_downloads/
+get-dataset-flickr/iphone_downloads/
