@@ -1,0 +1,9 @@
+python build_data.py --X_input_dir data/selfie2bokeh/trainA --X_output_file data/tfrecords/selfie.tfrecords --Y_input_dir data/selfie2bokeh/trainB --Y_output_file data/tfrecords/bokeh.tfrecords
+
+tensorboard --logdir checkpoints/20180317-2023
+python -m tensorflow.tensorboard --logdir=checkpoints/20180317-2023
+
+
+python train.py --X=data/tfrecords/selfie.tfrecords --Y=data/tfrecords/bokeh.tfrecords
+
+
