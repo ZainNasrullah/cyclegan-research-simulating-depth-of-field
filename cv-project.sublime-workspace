@@ -29,10 +29,14 @@
 			}
 		},
 		{
-			"file": "pytorch-CycleGAN-and-pix2pix/data/aligned_dataset.py",
+			"contents": "<snippet>\n    <content><![CDATA[\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt\n\nimport os\nimport re\n\n$1\n]]></content>\n    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->\n<tabTrigger>import-data</tabTrigger>\n    <!-- Optional: Set a scope to limit where the snippet will trigger -->\n    <!-- <scope>source.python</scope> -->\n</snippet>\n",
+			"file": "/C/Users/Zain/AppData/Roaming/Sublime Text 3/Packages/User/import-default.sublime-snippet",
+			"file_size": 401,
+			"file_write_time": 131665100131800082,
 			"settings":
 			{
-				"buffer_size": 2409,
+				"buffer_size": 385,
+				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
@@ -40,7 +44,7 @@
 			"file": "pytorch-CycleGAN-and-pix2pix/train.py",
 			"settings":
 			{
-				"buffer_size": 2400,
+				"buffer_size": 2398,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -55,18 +59,11 @@
 			}
 		},
 		{
-			"file": "pytorch-CycleGAN-and-pix2pix/util/get_data.py",
-			"settings":
-			{
-				"buffer_size": 3511,
-				"line_ending": "Windows"
-			}
-		},
-		{
 			"file": "pytorch-CycleGAN-and-pix2pix/models/models.py",
 			"settings":
 			{
 				"buffer_size": 701,
+				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
@@ -180,6 +177,11 @@
 	],
 	"file_history":
 	[
+		"/C/Users/Zain/AppData/Roaming/Sublime Text 3/Packages/User/import-default.sublime-snippet.json",
+		"/C/Users/Zain/AppData/Roaming/Sublime Text 3/Packages/Anaconda/Anaconda.sublime-settings",
+		"/C/Users/Zain/AppData/Roaming/Sublime Text 3/Packages/User/Anaconda.sublime-settings",
+		"/Z/CV-Project/pytorch-CycleGAN-and-pix2pix/data/aligned_dataset.py",
+		"/Z/CV-Project/pytorch-CycleGAN-and-pix2pix/util/get_data.py",
 		"/Z/CV-Project/pytorch-CycleGAN-and-pix2pix/data/unaligned_dataset.py",
 		"/Z/CV-Project/pytorch-CycleGAN-and-pix2pix/data/base_data_loader.py",
 		"/Z/CV-Project/pytorch-CycleGAN-and-pix2pix/data/custom_dataset_data_loader.py",
@@ -191,9 +193,7 @@
 		"/Z/CV-Project/cv-project.sublime-workspace",
 		"/Z/Sublime Text 3/sublime.py",
 		"/Z/Downloads/Chrome/Selfie-dataset.tar/CV-Project/person-segmentation-deeplabv3/deeplab/inference.py",
-		"/C/Users/Zain/AppData/Roaming/Sublime Text 3/Packages/User/Anaconda.sublime-settings",
 		"/C/Users/Zain/AppData/Roaming/Sublime Text 3/Packages/User/SublimeLinter.sublime-settings",
-		"/C/Users/Zain/AppData/Roaming/Sublime Text 3/Packages/Anaconda/Anaconda.sublime-settings",
 		"/C/Users/Zain/AppData/Roaming/Sublime Text 3/Packages/User/JSON.sublime-settings",
 		"/Z/Downloads/Chrome/Selfie-dataset.tar/CV-Project/models/research/deeplab/core/feature_extractor.py",
 		"/Z/Downloads/Chrome/Selfie-dataset.tar/CV-Project/models/research/deeplab/inference.py",
@@ -258,7 +258,7 @@
 	],
 	"find":
 	{
-		"height": 53.0
+		"height": 24.0
 	},
 	"find_in_files":
 	{
@@ -294,7 +294,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 0,
 			"sheets":
 			[
 				{
@@ -310,51 +310,34 @@
 						"selection":
 						[
 							[
-								1666,
-								1666
+								552,
+								552
 							]
 						],
 						"settings":
 						{
+							"SL.15.region_keys":
+							[
+								"SL.pyflakes.Highlights.|source.js meta.block.js keyword.operator.assignment.js|1316",
+								"sublime_linter.protected_regions",
+								"SL.pyflakes.Gutter.source.js meta.block.js keyword.operator.assignment.js.Packages/SublimeLinter/gutter-themes/Default/pointer.png"
+							],
 							"SL.36.region_keys":
 							[
 								"SL.pyflakes.Highlights.|source.js meta.block.js keyword.operator.assignment.js|1316",
 								"SL.pyflakes.Gutter.source.js meta.block.js keyword.operator.assignment.js.Packages/SublimeLinter/gutter-themes/Default/pointer.png",
 								"sublime_linter.protected_regions"
 							],
-							"git_gutter_is_enabled": true,
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 993.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "pytorch-CycleGAN-and-pix2pix/data/aligned_dataset.py",
-					"semi_transient": true,
-					"settings":
-					{
-						"buffer_size": 2409,
-						"regions":
-						{
-						},
-						"selection":
-						[
+							"auto_complete_triggers":
 							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"SL.169.region_keys":
-							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
 							],
 							"git_gutter_is_enabled": true,
 							"syntax": "Packages/Python/Python.sublime-syntax",
@@ -365,7 +348,37 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/C/Users/Zain/AppData/Roaming/Sublime Text 3/Packages/User/import-default.sublime-snippet",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 385,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								128,
+								128
+							]
+						],
+						"settings":
+						{
+							"default_extension": "sublime-snippet",
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/XML/XML.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
@@ -374,19 +387,23 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2400,
+						"buffer_size": 2398,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								285,
-								285
+								211,
+								211
 							]
 						],
 						"settings":
 						{
+							"SL.17.region_keys":
+							[
+								"sublime_linter.protected_regions"
+							],
 							"SL.38.region_keys":
 							[
 								"SL.pyflakes.Highlights.|source.js meta.block.js keyword.operator.assignment.js|1316",
@@ -413,7 +430,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
@@ -429,12 +446,15 @@
 						"selection":
 						[
 							[
-								221,
-								221
+								67,
+								67
 							]
 						],
 						"settings":
 						{
+							"SL.18.region_keys":
+							[
+							],
 							"SL.53.region_keys":
 							[
 								"sublime_linter.protected_regions"
@@ -448,7 +468,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 4,
 					"type": "text"
 				}
 			]
@@ -459,40 +479,6 @@
 			[
 				{
 					"buffer": 4,
-					"file": "pytorch-CycleGAN-and-pix2pix/util/get_data.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3511,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"SL.64.region_keys":
-							[
-							],
-							"git_gutter_is_enabled": true,
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
 					"file": "pytorch-CycleGAN-and-pix2pix/models/models.py",
 					"semi_transient": false,
 					"settings":
@@ -504,12 +490,15 @@
 						"selection":
 						[
 							[
-								0,
-								0
+								505,
+								505
 							]
 						],
 						"settings":
 						{
+							"SL.20.region_keys":
+							[
+							],
 							"SL.65.region_keys":
 							[
 							],
@@ -522,11 +511,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 5,
 					"file": "pytorch-CycleGAN-and-pix2pix/models/cycle_gan_model.py",
 					"semi_transient": false,
 					"settings":
@@ -544,6 +533,9 @@
 						],
 						"settings":
 						{
+							"SL.21.region_keys":
+							[
+							],
 							"SL.68.region_keys":
 							[
 							],
@@ -552,17 +544,17 @@
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
-						"translation.x": 83.0,
-						"translation.y": 121.0,
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 7,
+					"buffer": 6,
 					"file": "pytorch-CycleGAN-and-pix2pix/models/networks.py",
-					"semi_transient": true,
+					"semi_transient": false,
 					"settings":
 					{
 						"buffer_size": 18737,
@@ -578,6 +570,9 @@
 						],
 						"settings":
 						{
+							"SL.22.region_keys":
+							[
+							],
 							"SL.70.region_keys":
 							[
 							],
@@ -590,7 +585,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 6,
 					"type": "text"
 				}
 			]
@@ -624,7 +619,7 @@
 		"cols":
 		[
 			0.0,
-			0.538020833333,
+			0.5,
 			1.0
 		],
 		"rows":

@@ -18,11 +18,13 @@ class CycleGANModel(BaseModel):
         # The naming conversion is different from those used in the paper
         # Code (paper): G_A (G), G_B (F), D_A (D_Y), D_B (D_X)
 
+        # define Generator networks with number of input/output image channels number of filters, model type, whether there is normilization, dropout, inititialization, etc;
         self.netG_A = networks.define_G(opt.input_nc, opt.output_nc,
                                         opt.ngf, opt.which_model_netG, opt.norm, not opt.no_dropout, opt.init_type, self.gpu_ids)
         self.netG_B = networks.define_G(opt.output_nc, opt.input_nc,
                                         opt.ngf, opt.which_model_netG, opt.norm, not opt.no_dropout, opt.init_type, self.gpu_ids)
 
+        # only need to define discriminators if training, pass in number of filters in first layer, model type, number of layers, norm, whether to use sigmoid, initialization, etc.
         if self.isTrain:
             use_sigmoid = opt.no_lsgan
             self.netD_A = networks.define_D(opt.output_nc, opt.ndf,
@@ -31,6 +33,8 @@ class CycleGANModel(BaseModel):
             self.netD_B = networks.define_D(opt.input_nc, opt.ndf,
                                             opt.which_model_netD,
                                             opt.n_layers_D, opt.norm, use_sigmoid, opt.init_type, self.gpu_ids)
+
+        # load generator and discriminator values if continuing training
         if not self.isTrain or opt.continue_train:
             which_epoch = opt.which_epoch
             self.load_network(self.netG_A, 'G_A', which_epoch)
@@ -39,18 +43,29 @@ class CycleGANModel(BaseModel):
                 self.load_network(self.netD_A, 'D_A', which_epoch)
                 self.load_network(self.netD_B, 'D_B', which_epoch)
 
+        # if training
         if self.isTrain:
+
+            # pooling is a buffer to store generated images (not relevant)
             self.fake_A_pool = ImagePool(opt.pool_size)
             self.fake_B_pool = ImagePool(opt.pool_size)
+
             # define loss functions
-            self.criterionGAN = networks.GANLoss(use_lsgan=not opt.no_lsgan, tensor=self.Tensor)
-            self.criterionCycle = torch.nn.L1Loss()
-            self.criterionIdt = torch.nn.L1Loss()
+            self.criterionGAN = networks.GANLoss(use_lsgan=not opt.no_lsgan, tensor=self.Tensor)  # loss for GAN
+            self.criterionCycle = torch.nn.L1Loss()  # cycle loss
+            self.criterionIdt = torch.nn.L1Loss()  # identity loss
+
             # initialize optimizers
+
+            # optimizer for generators (both A and B)
             self.optimizer_G = torch.optim.Adam(itertools.chain(self.netG_A.parameters(), self.netG_B.parameters()),
                                                 lr=opt.lr, betas=(opt.beta1, 0.999))
+
+            # Separate optimizers for discriminator A and B
             self.optimizer_D_A = torch.optim.Adam(self.netD_A.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
             self.optimizer_D_B = torch.optim.Adam(self.netD_B.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
+
+            # create list of optimizers and schedulers
             self.optimizers = []
             self.schedulers = []
             self.optimizers.append(self.optimizer_G)
@@ -60,6 +75,7 @@ class CycleGANModel(BaseModel):
                 self.schedulers.append(networks.get_scheduler(optimizer, opt))
 
         print('---------- Networks initialized -------------')
+        # printing out network stats
         networks.print_network(self.netG_A)
         networks.print_network(self.netG_B)
         if self.isTrain:
@@ -67,6 +83,8 @@ class CycleGANModel(BaseModel):
             networks.print_network(self.netD_B)
         print('-----------------------------------------------')
 
+    # specify which data is A and which is B
+    # ensure to set to cuda for efficient calculation
     def set_input(self, input):
         AtoB = self.opt.which_direction == 'AtoB'
         input_A = input['A' if AtoB else 'B']
