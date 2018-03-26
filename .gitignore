@@ -11,3 +11,5 @@ person-segmentation-deeplabv3/deeplab/xception_coco_voctrainval/
 
 CycleGAN-TensorFlow/data/
 CycleGAN-TensorFlow/checkpoints/
+
+pytorch-CycleGAN-and-pix2pix/datasets/
