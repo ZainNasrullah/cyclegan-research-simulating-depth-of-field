@@ -54,8 +54,7 @@ class CycleGANModel(BaseModel):
             self.criterionGAN = networks.GANLoss(use_lsgan=not opt.no_lsgan, tensor=self.Tensor)  # loss for GAN
             self.criterionCycle = torch.nn.L1Loss()  # cycle loss
             self.criterionIdt = torch.nn.L1Loss()  # identity loss
-
-            # initialize optimizers
+            self.criterionMask = torch.nn.L1Loss()  # identity loss
 
             # optimizer for generators (both A and B)
             self.optimizer_G = torch.optim.Adam(itertools.chain(self.netG_A.parameters(), self.netG_B.parameters()),
@@ -89,16 +88,30 @@ class CycleGANModel(BaseModel):
         AtoB = self.opt.which_direction == 'AtoB'
         input_A = input['A' if AtoB else 'B']
         input_B = input['B' if AtoB else 'A']
+        if self.opt.lambda_mask > 0.0:
+            input_A_mask = input['A_mask' if AtoB else 'B_mask']
+            input_B_mask = input['B_mask' if AtoB else 'A_mask']
+
         if len(self.gpu_ids) > 0:
             input_A = input_A.cuda(self.gpu_ids[0], async=True)
             input_B = input_B.cuda(self.gpu_ids[0], async=True)
+            if self.opt.lambda_mask > 0.0:
+                input_A_mask = input_A_mask.cuda(self.gpu_ids[0], async=True)
+                input_B_mask = input_B_mask.cuda(self.gpu_ids[0], async=True)
+
         self.input_A = input_A
         self.input_B = input_B
+        if self.opt.lambda_mask > 0.0:
+            self.input_A_mask = input_A_mask
+            self.input_B_mask = input_B_mask
         self.image_paths = input['A_paths' if AtoB else 'B_paths']
 
     def forward(self):
         self.real_A = Variable(self.input_A)
         self.real_B = Variable(self.input_B)
+        if self.opt.lambda_mask > 0.0:
+            self.real_A_mask = Variable(self.input_A_mask)
+            self.real_B_mask = Variable(self.input_B_mask)
 
     def test(self):
         real_A = Variable(self.input_A, volatile=True)
@@ -171,6 +184,28 @@ class CycleGANModel(BaseModel):
         pred_fake = self.netD_B(fake_A)
         loss_G_B = self.criterionGAN(pred_fake, True)
 
+        # mask regularizer
+        lambda_mask = self.opt.lambda_mask
+        if lambda_mask > 0:
+            # key part of mask regularizer
+            fake_B_mask = fake_B.clone()
+            fake_A_mask = fake_A.clone()
+            fake_B_mask[self.real_A_mask == 0] = 0
+            fake_A_mask[self.real_B_mask == 0] = 0
+
+            loss_mask_A = self.criterionMask(fake_B_mask, self.real_A_mask) * lambda_A * lambda_mask
+            loss_mask_B = self.criterionMask(fake_A_mask, self.real_B_mask) * lambda_B * lambda_mask
+
+            self.mask_A = loss_mask_A.data
+            self.mask_B = loss_mask_B.data
+            self.loss_mask_A = loss_mask_A.data[0]
+            self.loss_mask_B = loss_mask_B.data[0]
+        else:
+            loss_mask_A = 0
+            loss_mask_B = 0
+            self.loss_mask_A = 0
+            self.loss_mask_A = 0
+
         # Forward cycle loss
         rec_A = self.netG_B(fake_B)
         loss_cycle_A = self.criterionCycle(rec_A, self.real_A) * lambda_A
@@ -178,8 +213,9 @@ class CycleGANModel(BaseModel):
         # Backward cycle loss
         rec_B = self.netG_A(fake_A)
         loss_cycle_B = self.criterionCycle(rec_B, self.real_B) * lambda_B
+
         # combined loss
-        loss_G = loss_G_A + loss_G_B + loss_cycle_A + loss_cycle_B + loss_idt_A + loss_idt_B
+        loss_G = loss_G_A + loss_G_B + loss_cycle_A + loss_cycle_B + loss_idt_A + loss_idt_B + loss_mask_A + loss_mask_B
         loss_G.backward()
 
         self.fake_B = fake_B.data
@@ -214,6 +250,9 @@ class CycleGANModel(BaseModel):
         if self.opt.lambda_identity > 0.0:
             ret_errors['idt_A'] = self.loss_idt_A
             ret_errors['idt_B'] = self.loss_idt_B
+        if self.opt.lambda_mask > 0.0:
+            ret_errors['mask_A'] = self.loss_mask_A
+            ret_errors['mask_B'] = self.loss_mask_B
         return ret_errors
 
     def get_current_visuals(self):
@@ -228,6 +267,9 @@ class CycleGANModel(BaseModel):
         if self.opt.isTrain and self.opt.lambda_identity > 0.0:
             ret_visuals['idt_A'] = util.tensor2im(self.idt_A)
             ret_visuals['idt_B'] = util.tensor2im(self.idt_B)
+        if self.opt.isTrain and self.opt.lambda_mask > 0.0:
+            ret_visuals['mask_A'] = util.tensor2im(self.mask_A)
+            ret_visuals['mask_B'] = util.tensor2im(self.mask_B)
         return ret_visuals
 
     def save(self, label):

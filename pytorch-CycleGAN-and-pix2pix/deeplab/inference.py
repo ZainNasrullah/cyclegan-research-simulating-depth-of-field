@@ -8,11 +8,9 @@ from matplotlib import pyplot as plt
 import numpy as np
 from PIL import Image
 import cv2
+import pdb
 
 import tensorflow as tf
-
-for i in [1, 2, 3]:
-    test = False
 
 
 class DeepLabModel(object):
@@ -20,13 +18,12 @@ class DeepLabModel(object):
 
     INPUT_TENSOR_NAME = 'ImageTensor:0'
     OUTPUT_TENSOR_NAME = 'SemanticPredictions:0'
-    INPUT_SIZE = 512
     FROZEN_GRAPH_NAME = 'frozen_inference_graph'
 
-    def __init__(self, tarball_path):
+    def __init__(self, tarball_path, input_size=256):
         """Creates and loads pretrained deeplab model."""
         self.graph = tf.Graph()
-
+        self.INPUT_SIZE = input_size
         graph_def = None
         # Extract frozen graph from tar archive.
         tar_file = tarfile.open(tarball_path)
@@ -163,58 +160,85 @@ def vis_segmentation(image, seg_map):
     plt.show()
 
 
-def run_visualization(image):
+def run_visualization(model, image):
     """Inferences DeepLab model and visualizes result."""
     print('running deeplab on image %s...' % image)
     orignal_im = Image.open(image)
-    resized_im, seg_map = MODEL.run(orignal_im)
+    resized_im, seg_map = model.run(orignal_im)
 
     vis_segmentation(resized_im, seg_map)
 
 
-LABEL_NAMES = np.asarray([
-    'background', 'aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus',
-    'car', 'cat', 'chair', 'cow', 'diningtable', 'dog', 'horse', 'motorbike',
-    'person', 'pottedplant', 'sheep', 'sofa', 'train', 'tv'
-])
+# LABEL_NAMES = np.asarray([
+#     'background', 'aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus',
+#     'car', 'cat', 'chair', 'cow', 'diningtable', 'dog', 'horse', 'motorbike',
+#     'person', 'pottedplant', 'sheep', 'sofa', 'train', 'tv'
+# ])
 
-FULL_LABEL_MAP = np.arange(len(LABEL_NAMES)).reshape(len(LABEL_NAMES), 1)
-FULL_COLOR_MAP = label_to_color_image(FULL_LABEL_MAP)
+# FULL_LABEL_MAP = np.arange(len(LABEL_NAMES)).reshape(len(LABEL_NAMES), 1)
+# FULL_COLOR_MAP = label_to_color_image(FULL_LABEL_MAP)
 
 
 # Load Model
 # ['mobilenetv2_coco_voctrainaug', 'mobilenetv2_coco_voctrainval', 'xception_coco_voctrainaug', 'xception_coco_voctrainval']
-MODEL_NAME = 'mobilenetv2_coco_voctrainaug'
+def create_segmentation_model(input_size=256):
+    MODEL_NAME = 'mobilenetv2_coco_voctrainaug'
 
-_DOWNLOAD_URL_PREFIX = 'http://download.tensorflow.org/models/'
-_MODEL_URLS = {
-    'mobilenetv2_coco_voctrainaug':
-        'deeplabv3_mnv2_pascal_train_aug_2018_01_29.tar.gz',
-    'mobilenetv2_coco_voctrainval':
-        'deeplabv3_mnv2_pascal_trainval_2018_01_29.tar.gz',
-    'xception_coco_voctrainaug':
-        'deeplabv3_pascal_train_aug_2018_01_04.tar.gz',
-    'xception_coco_voctrainval':
-        'deeplabv3_pascal_trainval_2018_01_04.tar.gz',
-}
-_TARBALL_NAME = 'deeplab_model.tar.gz'
+    _DOWNLOAD_URL_PREFIX = 'http://download.tensorflow.org/models/'
+    _MODEL_URLS = {
+        'mobilenetv2_coco_voctrainaug':
+            'deeplabv3_mnv2_pascal_train_aug_2018_01_29.tar.gz',
+        'mobilenetv2_coco_voctrainval':
+            'deeplabv3_mnv2_pascal_trainval_2018_01_29.tar.gz',
+        'xception_coco_voctrainaug':
+            'deeplabv3_pascal_train_aug_2018_01_04.tar.gz',
+        'xception_coco_voctrainval':
+            'deeplabv3_pascal_trainval_2018_01_04.tar.gz',
+    }
+    _TARBALL_NAME = 'deeplab_model.tar.gz'
 
-model_dir = tempfile.mkdtemp()
-tf.gfile.MakeDirs(model_dir)
+    model_dir = tempfile.mkdtemp()
+    tf.gfile.MakeDirs(model_dir)
 
-download_path = os.path.join(MODEL_NAME, _TARBALL_NAME)
+    download_path = os.path.join(MODEL_NAME, _TARBALL_NAME)
 
-if not os.path.exists(download_path):
-    os.makedirs(MODEL_NAME)
-    print('downloading model, this might take a while...')
-    urllib.request.urlretrieve(_DOWNLOAD_URL_PREFIX + _MODEL_URLS[MODEL_NAME],
-                               download_path)
-    print('download completed! loading DeepLab model...')
+    if not os.path.exists(download_path):
+        os.makedirs(MODEL_NAME)
+        print('downloading model, this might take a while...')
+        urllib.request.urlretrieve(_DOWNLOAD_URL_PREFIX + _MODEL_URLS[MODEL_NAME],
+                                   download_path)
+        print('download completed! loading DeepLab model...')
 
-MODEL = DeepLabModel(download_path)
-print('model loaded successfully!')
+    return DeepLabModel(download_path, input_size)
 
 
-SAMPLE_IMAGE = 'iphone_downloaded__2.jpg'
-image_url = SAMPLE_IMAGE
-run_visualization(image_url)
+'''
+def create_segmentation_visualization(model, image):
+    image = 'iphone_downloaded__2.jpg'
+    run_visualization(model, image)
+'''
+
+
+def create_segmentation_map(model, image):
+    if type(image) is str:
+        image = Image.open(image)
+    resized_im, seg_map = model.run(image)
+
+    image_masked = resized_im.convert("RGB")
+    pixdata = image_masked.load()
+    width, height = resized_im.size
+    for y in range(height):
+        for x in range(width):
+            if seg_map[y, x] != 15:
+                pixdata[x, y] = (0, 0, 0)
+
+    plt.imshow(image_masked)
+    plt.axis('off')
+    plt.show()
+    return image_masked
+
+
+model = create_segmentation_model()
+image = 'iphone_downloaded__2.jpg'
+run_visualization(model, image)
+create_segmentation_map(model, image)

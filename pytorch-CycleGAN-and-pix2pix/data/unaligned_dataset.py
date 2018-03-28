@@ -1,7 +1,8 @@
 import os.path
-from data.base_dataset import BaseDataset, get_transform
+from data.base_dataset import BaseDataset, get_transform, toTensor_normalize
 from data.image_folder import make_dataset
 from PIL import Image
+from deeplab.inference import *
 import random
 
 
@@ -20,6 +21,8 @@ class UnalignedDataset(BaseDataset):
         self.A_size = len(self.A_paths)
         self.B_size = len(self.B_paths)
         self.transform = get_transform(opt)
+        self.toTensor_normalize = toTensor_normalize(opt)
+        self.segmentation_model = create_segmentation_model(opt.imageSize)
 
     def __getitem__(self, index):
         A_path = self.A_paths[index % self.A_size]
@@ -34,6 +37,18 @@ class UnalignedDataset(BaseDataset):
 
         A = self.transform(A_img)
         B = self.transform(B_img)
+
+        # make call to semantic segmentation for producing A_mask
+        if self.opt.lambda_mask > 0.0:
+            # masks should be correct RGB values for person and 0 elsewhere
+            A_mask = create_segmentation_map(self.segmentation_model, A)
+            B_mask = create_segmentation_map(self.segmentation_model, B)
+
+        # close code
+
+        A = self.toTensor_normalize(A)
+        B = self.toTensor_normalize(B)
+
         if self.opt.which_direction == 'BtoA':
             input_nc = self.opt.output_nc
             output_nc = self.opt.input_nc
@@ -48,8 +63,12 @@ class UnalignedDataset(BaseDataset):
         if output_nc == 1:  # RGB to gray
             tmp = B[0, ...] * 0.299 + B[1, ...] * 0.587 + B[2, ...] * 0.114
             B = tmp.unsqueeze(0)
-        return {'A': A, 'B': B,
-                'A_paths': A_path, 'B_paths': B_path}
+
+        if self.opt.lambda_mask > 0.0:
+            return {'A': A, 'A_mask': A_mask, 'B': B, 'B_mask': B_mask,
+                    'A_paths': A_path, 'B_paths': B_path}
+
+        return {'A': A, 'B': B, 'A_paths': A_path, 'B_paths': B_path}
 
     def __len__(self):
         return max(self.A_size, self.B_size)

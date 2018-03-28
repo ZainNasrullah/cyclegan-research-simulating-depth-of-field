@@ -33,9 +33,13 @@ def get_transform(opt):
     if opt.isTrain and not opt.no_flip:
         transform_list.append(transforms.RandomHorizontalFlip())
 
-    transform_list += [transforms.ToTensor(),
-                       transforms.Normalize((0.5, 0.5, 0.5),
-                                            (0.5, 0.5, 0.5))]
+    return transforms.Compose(transform_list)
+
+
+def toTensor_normalize(opt):
+    transform_list = [transforms.ToTensor(),
+                      transforms.Normalize((0.5, 0.5, 0.5),
+                                           (0.5, 0.5, 0.5))]
     return transforms.Compose(transform_list)
 
 
