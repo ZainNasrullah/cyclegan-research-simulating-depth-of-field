@@ -83,6 +83,12 @@ class CycleGANModel(BaseModel):
             networks.print_network(self.netD_B)
         print('-----------------------------------------------')
 
+    def normalize_0_1(self, tensor):
+        return (tensor + 1) / 2.
+
+    def normalize_neg_1_1(self, tensor):
+        return (2. * tensor) - 1
+
     # specify which data is A and which is B
     # ensure to set to cuda for efficient calculation
     def set_input(self, input):
@@ -135,11 +141,14 @@ class CycleGANModel(BaseModel):
         # Real
         pred_real = netD(real)
         loss_D_real = self.criterionGAN(pred_real, True)
+
         # Fake
         pred_fake = netD(fake.detach())
         loss_D_fake = self.criterionGAN(pred_fake, False)
+
         # Combined loss
         loss_D = (loss_D_real + loss_D_fake) * 0.5
+
         # backward
         loss_D.backward()
         return loss_D
@@ -155,12 +164,13 @@ class CycleGANModel(BaseModel):
         self.loss_D_B = loss_D_B.data[0]
 
     def backward_G(self):
-        lambda_mask = self.opt.lambda_mask
-        mask_limit = 0.0
 
+        # local copies of mask and identity loss
+        lambda_mask = self.opt.lambda_mask
         lambda_idt = self.opt.lambda_identity
         lambda_A = self.opt.lambda_A
         lambda_B = self.opt.lambda_B
+
         # Identity loss
         if lambda_idt > 0:
             # G_A should be identity if real_B is fed.
@@ -180,34 +190,70 @@ class CycleGANModel(BaseModel):
             self.loss_idt_A = 0
             self.loss_idt_B = 0
 
-        # GAN loss D_A(G_A(A))
+        # GAN loss D_A(G_A(A)) and D_B(G_B(B))
         fake_B = self.netG_A(self.real_A)
+        fake_A = self.netG_B(self.real_B)
+
+        # create copy of fakes for masking
         fake_B_mask = fake_B.clone() if lambda_mask > 0.0 else 0.0
+        fake_A_mask = fake_A.clone() if lambda_mask > 0.0 else 0.0
+
         if self.opt.add_mask:
+
+            # save copy of fake B for visualization
             self.fake_B_viz = fake_B.data
+            self.fake_A_viz = fake_A.data
+
+            # normalize into range 0,1 for pixel manipulation
+            self.real_A_mask = self.normalize_0_1(self.real_A_mask)
+            self.real_B_mask = self.normalize_0_1(self.real_B_mask)
+            fake_B = self.normalize_0_1(fake_B)
+            fake_A = self.normalize_0_1(fake_A)
+
+            # invert alpha mask (all 0s become 1s and 1s become 0s)
             real_A_inverted = (self.real_A_mask_alpha.clone() - 1) * -1
+            real_B_inverted = (self.real_B_mask_alpha.clone() - 1) * -1
+
+            # combine real mask of person with fake backgrounds
             fake_B = self.real_A_mask + torch.mul(fake_B, real_A_inverted)
-        pred_fake = self.netD_A(fake_B)
-        loss_G_A = self.criterionGAN(pred_fake, True)
+            fake_A = self.real_B_mask + torch.mul(fake_A, real_B_inverted)
+
+            # normalize back into range -1,1 for proper visualization and gradient flow
+            fake_B = self.normalize_neg_1_1(fake_B)
+            fake_A = self.normalize_neg_1_1(fake_A)
+
+        # GAN loss D_A(G_A(A)); discriminator compares real B with fake B
+        pred_fake_A = self.netD_A(fake_B)
+        loss_G_A = self.criterionGAN(pred_fake_A, True)
 
         # GAN loss D_B(G_B(B))
-        fake_A = self.netG_B(self.real_B)
-        fake_A_mask = fake_A.clone() if lambda_mask > 0.0 else 0.0
-        if self.opt.add_mask:
-            self.fake_A_viz = fake_A.data
-            real_B_inverted = (self.real_B_mask_alpha.clone() - 1) * -1
-            fake_A = self.real_B_mask + torch.mul(fake_A, real_B_inverted)
-        pred_fake = self.netD_B(fake_A)
-        loss_G_B = self.criterionGAN(pred_fake, True)
+        pred_fake_B = self.netD_B(fake_A)
+        loss_G_B = self.criterionGAN(pred_fake_B, True)
 
         # mask regularizer
         if lambda_mask > 0.0:
-            fake_B_mask = torch.mul(fake_B_mask, self.real_A_mask_alpha)
-            loss_mask_A = self.criterionMask(fake_B_mask, self.real_A_mask) * lambda_A * lambda_mask
 
+            # normalize copies of fakes into range 0,1
+            fake_B_mask = self.normalize_0_1(fake_B_mask)
+            fake_A_mask = self.normalize_0_1(fake_A_mask)
+
+            # mask out person in fake image using alpha channel of the real image mask
+            fake_B_mask = torch.mul(fake_B_mask, self.real_A_mask_alpha)
             fake_A_mask = torch.mul(fake_A_mask, self.real_B_mask_alpha)
+
+            # normalize masked fake copies into range -1,1 for visualization and gradient
+            fake_B_mask = self.normalize_neg_1_1(fake_B_mask)
+            fake_A_mask = self.normalize_neg_1_1(fake_A_mask)
+
+            # normalize real masks back into range -1,1 for visualization and gradient
+            self.real_A_mask = self.normalize_neg_1_1(self.real_A_mask)
+            self.real_B_mask = self.normalize_neg_1_1(self.real_B_mask)
+
+            # calculate the loss between the real and fake masks
+            loss_mask_A = self.criterionMask(fake_B_mask, self.real_A_mask) * lambda_A * lambda_mask
             loss_mask_B = self.criterionMask(fake_A_mask, self.real_B_mask) * lambda_B * lambda_mask
 
+            # store values for errors and visualization
             self.real_A_mask_data = self.real_A_mask.data
             self.real_B_mask_data = self.real_B_mask.data
             self.mask_A = fake_B_mask.data
@@ -215,10 +261,15 @@ class CycleGANModel(BaseModel):
             self.loss_mask_A = loss_mask_A.data[0]
             self.loss_mask_B = loss_mask_B.data[0]
         else:
+            # normalize real masks back into range -1,1 for visualization and gradient
+            self.real_A_mask = self.normalize_neg_1_1(self.real_A_mask)
+            self.real_B_mask = self.normalize_neg_1_1(self.real_B_mask)
+
+            # store values for errors and visualization
             loss_mask_A = 0
             loss_mask_B = 0
             self.loss_mask_A = 0
-            self.loss_mask_A = 0
+            self.loss_mask_B = 0
 
         # Forward cycle loss
         rec_A = self.netG_B(fake_B)
@@ -281,10 +332,11 @@ class CycleGANModel(BaseModel):
         if self.opt.isTrain and self.opt.lambda_identity > 0.0:
             ret_visuals['idt_A'] = util.tensor2im(self.idt_A)
             ret_visuals['idt_B'] = util.tensor2im(self.idt_B)
-        if self.opt.isTrain and self.opt.lambda_mask > 0.0:
+        if self.opt.isTrain and (self.opt.lambda_mask > 0.0 or self.opt.add_mask):
             ret_visuals['mask_real_A'] = util.tensor2im(self.real_A_mask_data)
-            ret_visuals['mask_fake_B'] = util.tensor2im(self.mask_A)
             ret_visuals['mask_real_B'] = util.tensor2im(self.real_B_mask_data)
+        if self.opt.isTrain and self.opt.lambda_mask > 0.0:
+            ret_visuals['mask_fake_B'] = util.tensor2im(self.mask_A)
             ret_visuals['mask_fake_A'] = util.tensor2im(self.mask_B)
         if self.opt.isTrain and self.opt.add_mask:
             ret_visuals['fake_B_noMask'] = util.tensor2im(self.fake_B_viz)
