@@ -37,9 +37,9 @@ def get_transform(opt):
 
 
 def toTensor_normalize(opt):
-    transform_list = [transforms.ToTensor(),
-                      transforms.Normalize((0.5, 0.5, 0.5),
-                                           (0.5, 0.5, 0.5))]
+    transform_list = [transforms.ToTensor()]
+    # transforms.Normalize((0.5, 0.5, 0.5),
+    #(0.5, 0.5, 0.5))]
     return transforms.Compose(transform_list)
 
 

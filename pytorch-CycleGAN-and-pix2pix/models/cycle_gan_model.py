@@ -6,6 +6,7 @@ import util.util as util
 from util.image_pool import ImagePool
 from .base_model import BaseModel
 from . import networks
+import pdb
 
 
 class CycleGANModel(BaseModel):
@@ -110,8 +111,10 @@ class CycleGANModel(BaseModel):
         self.real_A = Variable(self.input_A)
         self.real_B = Variable(self.input_B)
         if self.opt.lambda_mask > 0.0:
-            self.real_A_mask = Variable(self.input_A_mask)
-            self.real_B_mask = Variable(self.input_B_mask)
+            self.real_A_mask = Variable(self.input_A_mask[:, :3, :, :])
+            self.real_B_mask = Variable(self.input_B_mask[:, :3, :, :])
+            self.real_A_mask_alpha = Variable(self.input_A_mask[:, 3, :, :])
+            self.real_B_mask_alpha = Variable(self.input_B_mask[:, 3, :, :])
 
     def test(self):
         real_A = Variable(self.input_A, volatile=True)
@@ -152,6 +155,9 @@ class CycleGANModel(BaseModel):
         self.loss_D_B = loss_D_B.data[0]
 
     def backward_G(self):
+        lambda_mask = self.opt.lambda_mask
+        mask_limit = 0.0
+
         lambda_idt = self.opt.lambda_identity
         lambda_A = self.opt.lambda_A
         lambda_B = self.opt.lambda_B
@@ -176,28 +182,36 @@ class CycleGANModel(BaseModel):
 
         # GAN loss D_A(G_A(A))
         fake_B = self.netG_A(self.real_A)
+        fake_B_mask = fake_B.clone() if lambda_mask > 0.0 else 0.0
+        if self.opt.add_mask:
+            self.fake_B_viz = fake_B.data
+            real_A_inverted = (self.real_A_mask_alpha.clone() - 1) * -1
+            fake_B = self.real_A_mask + torch.mul(fake_B, real_A_inverted)
         pred_fake = self.netD_A(fake_B)
         loss_G_A = self.criterionGAN(pred_fake, True)
 
         # GAN loss D_B(G_B(B))
         fake_A = self.netG_B(self.real_B)
+        fake_A_mask = fake_A.clone() if lambda_mask > 0.0 else 0.0
+        if self.opt.add_mask:
+            self.fake_A_viz = fake_A.data
+            real_B_inverted = (self.real_B_mask_alpha.clone() - 1) * -1
+            fake_A = self.real_B_mask + torch.mul(fake_A, real_B_inverted)
         pred_fake = self.netD_B(fake_A)
         loss_G_B = self.criterionGAN(pred_fake, True)
 
         # mask regularizer
-        lambda_mask = self.opt.lambda_mask
-        if lambda_mask > 0:
-            # key part of mask regularizer
-            fake_B_mask = fake_B.clone()
-            fake_A_mask = fake_A.clone()
-            fake_B_mask[self.real_A_mask == 0] = 0
-            fake_A_mask[self.real_B_mask == 0] = 0
-
+        if lambda_mask > 0.0:
+            fake_B_mask = torch.mul(fake_B, self.real_A_mask_alpha)
             loss_mask_A = self.criterionMask(fake_B_mask, self.real_A_mask) * lambda_A * lambda_mask
+
+            fake_A_mask = torch.mul(fake_A, self.real_B_mask_alpha)
             loss_mask_B = self.criterionMask(fake_A_mask, self.real_B_mask) * lambda_B * lambda_mask
 
-            self.mask_A = loss_mask_A.data
-            self.mask_B = loss_mask_B.data
+            self.real_A_mask_data = self.real_A_mask.data
+            self.real_B_mask_data = self.real_B_mask.data
+            self.mask_A = fake_B_mask.data
+            self.mask_B = fake_A_mask.data
             self.loss_mask_A = loss_mask_A.data[0]
             self.loss_mask_B = loss_mask_B.data[0]
         else:
@@ -268,8 +282,14 @@ class CycleGANModel(BaseModel):
             ret_visuals['idt_A'] = util.tensor2im(self.idt_A)
             ret_visuals['idt_B'] = util.tensor2im(self.idt_B)
         if self.opt.isTrain and self.opt.lambda_mask > 0.0:
-            ret_visuals['mask_A'] = util.tensor2im(self.mask_A)
-            ret_visuals['mask_B'] = util.tensor2im(self.mask_B)
+            ret_visuals['mask_real_A'] = util.tensor2im(self.real_A_mask_data)
+            ret_visuals['mask_fake_B'] = util.tensor2im(self.mask_A)
+            ret_visuals['mask_real_B'] = util.tensor2im(self.real_B_mask_data)
+            ret_visuals['mask_fake_A'] = util.tensor2im(self.mask_B)
+        if self.opt.isTrain and self.opt.add_mask:
+            ret_visuals['fake_B_noMask'] = util.tensor2im(self.fake_B_viz)
+            ret_visuals['fake_A_noMask'] = util.tensor2im(self.fake_A_viz)
+
         return ret_visuals
 
     def save(self, label):

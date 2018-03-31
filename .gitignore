@@ -1,5 +1,4 @@
-dataset-preparation/bokeh
-
+dataset-preparation/bokeh/
 dataset-preparation/selfies/
 
 get-dataset-flickr/bokeh_downloads/
@@ -13,3 +12,4 @@ CycleGAN-TensorFlow/data/
 CycleGAN-TensorFlow/checkpoints/
 
 pytorch-CycleGAN-and-pix2pix/datasets/
+pytorch-CycleGAN-and-pix2pix/checkpoints/

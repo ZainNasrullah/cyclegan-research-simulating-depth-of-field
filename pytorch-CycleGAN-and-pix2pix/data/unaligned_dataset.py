@@ -2,8 +2,8 @@ import os.path
 from data.base_dataset import BaseDataset, get_transform, toTensor_normalize
 from data.image_folder import make_dataset
 from PIL import Image
-from deeplab.inference import *
 import random
+import pdb
 
 
 class UnalignedDataset(BaseDataset):
@@ -22,7 +22,12 @@ class UnalignedDataset(BaseDataset):
         self.B_size = len(self.B_paths)
         self.transform = get_transform(opt)
         self.toTensor_normalize = toTensor_normalize(opt)
-        self.segmentation_model = create_segmentation_model(opt.imageSize)
+
+    def get_map_path(self, trainPath, A_or_B):
+        trainPath = os.path.normpath(trainPath)
+        map_path = trainPath.split(os.sep)
+        map_path[-2] = 'mask' + A_or_B
+        return os.path.join(*map_path)
 
     def __getitem__(self, index):
         A_path = self.A_paths[index % self.A_size]
@@ -35,19 +40,19 @@ class UnalignedDataset(BaseDataset):
         A_img = Image.open(A_path).convert('RGB')
         B_img = Image.open(B_path).convert('RGB')
 
-        A = self.transform(A_img)
-        B = self.transform(B_img)
+        #A = self.transform(A_img)
+        #B = self.transform(B_img)
+
+        A = self.toTensor_normalize(A_img)
+        B = self.toTensor_normalize(B_img)
 
         # make call to semantic segmentation for producing A_mask
         if self.opt.lambda_mask > 0.0:
-            # masks should be correct RGB values for person and 0 elsewhere
-            A_mask = create_segmentation_map(self.segmentation_model, A)
-            B_mask = create_segmentation_map(self.segmentation_model, B)
-
-        # close code
-
-        A = self.toTensor_normalize(A)
-        B = self.toTensor_normalize(B)
+            # pdb.set_trace()
+            A_map_path = self.get_map_path(A_path, 'A')
+            B_map_path = self.get_map_path(B_path, 'B')
+            A_mask = self.toTensor_normalize(Image.open(A_map_path))
+            B_mask = self.toTensor_normalize(Image.open(B_map_path))
 
         if self.opt.which_direction == 'BtoA':
             input_nc = self.opt.output_nc

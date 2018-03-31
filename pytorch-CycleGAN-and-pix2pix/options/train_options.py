@@ -43,6 +43,9 @@ class TrainOptions(BaseOptions):
             '--lambda_B', type=float, default=10.0, help='weight for cycle loss (B -> A -> B)')
         self.parser.add_argument(
             '--lambda_mask', type=float, default=0.0, help='weight for mask regularization')
+        self.parser.add_argument(
+            '--add_mask', action='store_true', help='whether to mask over generator output before passing to discriminator')
+
         self.parser.add_argument('--lambda_identity', type=float, default=0.5,
                                  help='use identity mapping. Setting lambda_identity other than 0 has an effect of scaling the weight of the identity mapping loss.'
                                  'For example, if the weight of the identity loss should be 10 times smaller than the weight of the reconstruction loss, please set lambda_identity = 0.1')

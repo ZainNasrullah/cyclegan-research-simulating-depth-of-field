@@ -1,5 +1,5 @@
 import os
-from PIL import Image
+from PIL import Image, ImageOps
 import argparse
 
 
@@ -33,7 +33,8 @@ def main(args):
             continue
 
         # resize to specified size
-        im.thumbnail(resize_to, Image.ANTIALIAS)
+        #im.thumbnail(resize_to, Image.ANTIALIAS)
+        im = ImageOps.fit(im, resize_to, Image.ANTIALIAS)
         im.save(os.path.join(out_dir, file), "JPEG")
 
     print("done")
@@ -46,8 +47,8 @@ if __name__ == "__main__":
     parser.add_argument('-s', '--size', type=int, default=256)
 
     parser.add_argument(
-        '-i', '--input', default=r"..\get-dataset-flickr\bokeh_downloads")
-    parser.add_argument('-o', '--output', default=r"bokeh")
+        '-i', '--input', default=r"..\get-dataset-flickr\iphone_downloads")
+    parser.add_argument('-o', '--output', default=r"selfies")
 
     args = parser.parse_args()
 

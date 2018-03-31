@@ -182,7 +182,7 @@ def run_visualization(model, image):
 # Load Model
 # ['mobilenetv2_coco_voctrainaug', 'mobilenetv2_coco_voctrainval', 'xception_coco_voctrainaug', 'xception_coco_voctrainval']
 def create_segmentation_model(input_size=256):
-    MODEL_NAME = 'mobilenetv2_coco_voctrainaug'
+    MODEL_NAME = 'xception_coco_voctrainval'
 
     _DOWNLOAD_URL_PREFIX = 'http://download.tensorflow.org/models/'
     _MODEL_URLS = {
@@ -224,21 +224,34 @@ def create_segmentation_map(model, image):
         image = Image.open(image)
     resized_im, seg_map = model.run(image)
 
-    image_masked = resized_im.convert("RGB")
+    image_masked = resized_im.convert("RGBA")
     pixdata = image_masked.load()
     width, height = resized_im.size
     for y in range(height):
         for x in range(width):
             if seg_map[y, x] != 15:
-                pixdata[x, y] = (0, 0, 0)
+                pixdata[x, y] = (0, 0, 0, 0)
 
-    plt.imshow(image_masked)
-    plt.axis('off')
-    plt.show()
     return image_masked
 
 
+def create_map_dataset(model, inputFolder, outputFolder):
+    images = os.listdir(inputFolder)
+    for image in images:
+        mask = create_segmentation_map(model, os.path.join(inputFolder, image))
+        mask.save(os.path.join(outputFolder, image), "png")
+
+
+model = create_segmentation_model()
+inputFolder = "../datasets/selfie2bokeh/trainA"
+outputFolder = "../datasets/selfie2bokeh/maskA"
+create_map_dataset(model, inputFolder, outputFolder)
+
+inputFolder = "../datasets/selfie2bokeh/trainB"
+outputFolder = "../datasets/selfie2bokeh/maskB"
+create_map_dataset(model, inputFolder, outputFolder)
+'''
 model = create_segmentation_model()
 image = 'iphone_downloaded__2.jpg'
 run_visualization(model, image)
-create_segmentation_map(model, image)
+create_segmentation_map(model, image)'''
