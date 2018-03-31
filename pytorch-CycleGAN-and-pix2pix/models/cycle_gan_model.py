@@ -202,10 +202,10 @@ class CycleGANModel(BaseModel):
 
         # mask regularizer
         if lambda_mask > 0.0:
-            fake_B_mask = torch.mul(fake_B, self.real_A_mask_alpha)
+            fake_B_mask = torch.mul(fake_B_mask, self.real_A_mask_alpha)
             loss_mask_A = self.criterionMask(fake_B_mask, self.real_A_mask) * lambda_A * lambda_mask
 
-            fake_A_mask = torch.mul(fake_A, self.real_B_mask_alpha)
+            fake_A_mask = torch.mul(fake_A_mask, self.real_B_mask_alpha)
             loss_mask_B = self.criterionMask(fake_A_mask, self.real_B_mask) * lambda_B * lambda_mask
 
             self.real_A_mask_data = self.real_A_mask.data
