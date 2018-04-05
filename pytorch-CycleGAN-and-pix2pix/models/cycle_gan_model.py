@@ -230,7 +230,22 @@ class CycleGANModel(BaseModel):
         pred_fake_B = self.netD_B(fake_A)
         loss_G_B = self.criterionGAN(pred_fake_B, True)
 
-        # mask regularizer
+        # cycle consistency
+        rec_A = self.netG_B(fake_B)
+        rec_B = self.netG_A(fake_A)
+
+        # mask the image back on top during cycle step
+        if self.opt.add_mask:
+            rec_A = self.real_A_mask + torch.mul(rec_A, real_A_inverted)
+            rec_B = self.real_B_mask + torch.mul(rec_B, real_B_inverted)
+
+        # Forward cycle loss
+        loss_cycle_A = self.criterionCycle(rec_A, self.real_A) * lambda_A
+
+        # Backward cycle loss
+        loss_cycle_B = self.criterionCycle(rec_B, self.real_B) * lambda_B
+
+        # mask loss
         if lambda_mask > 0.0:
 
             # normalize copies of fakes into range 0,1
@@ -273,13 +288,7 @@ class CycleGANModel(BaseModel):
             self.real_A_mask_data = self.real_A_mask.data
             self.real_B_mask_data = self.real_B_mask.data
 
-        # Forward cycle loss
-        rec_A = self.netG_B(fake_B)
-        loss_cycle_A = self.criterionCycle(rec_A, self.real_A) * lambda_A
 
-        # Backward cycle loss
-        rec_B = self.netG_A(fake_A)
-        loss_cycle_B = self.criterionCycle(rec_B, self.real_B) * lambda_B
 
         # combined loss
         loss_G = loss_G_A + loss_G_B + loss_cycle_A + loss_cycle_B + loss_idt_A + loss_idt_B + loss_mask_A + loss_mask_B
