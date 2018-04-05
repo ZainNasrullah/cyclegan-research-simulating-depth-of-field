@@ -1,0 +1,8 @@
+self.real_A.data.cpu().numpy()
+fake_B_mask.data.cpu().numpy()
+real_A_mask.data.cpu().numpy()
+self.real_A_mask.data.cpu().numpy()
+
+self.real_B_mask_alpha.data.cpu().numpy()
+
+real_A_mask

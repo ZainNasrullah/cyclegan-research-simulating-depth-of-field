@@ -1,4 +1,6 @@
-python train.py --dataroot ./datasets/selfie2bokeh --name selfie2bokeh_cyclegan_mask_added --model cycle_gan --no_dropout --lambda_mask=1.0 --add_mask
+python train.py --dataroot ./datasets/selfie2bokeh --name selfie2bokeh_cyclegan_mask_only --model cycle_gan --no_dropout --add_mask --continue_train
+
+#python train.py --dataroot ./datasets/selfie2bokeh --name selfie2bokeh_cyclegan_mask_added --model cycle_gan --no_dropout --lambda_mask=1.0 --add_mask --continue_train
 
 # python train.py --dataroot ./datasets/selfie2bokeh --name selfie2bokeh_cyclegan_mask --model cycle_gan --no_dropout --lambda_mask=1.0 --continue_train
 

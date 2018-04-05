@@ -95,20 +95,20 @@ class CycleGANModel(BaseModel):
         AtoB = self.opt.which_direction == 'AtoB'
         input_A = input['A' if AtoB else 'B']
         input_B = input['B' if AtoB else 'A']
-        if self.opt.lambda_mask > 0.0:
+        if self.opt.lambda_mask > 0.0 or self.opt.add_mask:
             input_A_mask = input['A_mask' if AtoB else 'B_mask']
             input_B_mask = input['B_mask' if AtoB else 'A_mask']
 
         if len(self.gpu_ids) > 0:
             input_A = input_A.cuda(self.gpu_ids[0], async=True)
             input_B = input_B.cuda(self.gpu_ids[0], async=True)
-            if self.opt.lambda_mask > 0.0:
+            if self.opt.lambda_mask > 0.0 or self.opt.add_mask:
                 input_A_mask = input_A_mask.cuda(self.gpu_ids[0], async=True)
                 input_B_mask = input_B_mask.cuda(self.gpu_ids[0], async=True)
 
         self.input_A = input_A
         self.input_B = input_B
-        if self.opt.lambda_mask > 0.0:
+        if self.opt.lambda_mask > 0.0 or self.opt.add_mask:
             self.input_A_mask = input_A_mask
             self.input_B_mask = input_B_mask
         self.image_paths = input['A_paths' if AtoB else 'B_paths']
@@ -116,7 +116,7 @@ class CycleGANModel(BaseModel):
     def forward(self):
         self.real_A = Variable(self.input_A)
         self.real_B = Variable(self.input_B)
-        if self.opt.lambda_mask > 0.0:
+        if self.opt.lambda_mask > 0.0 or self.opt.add_mask:
             self.real_A_mask = Variable(self.input_A_mask[:, :3, :, :])
             self.real_B_mask = Variable(self.input_B_mask[:, :3, :, :])
             self.real_A_mask_alpha = Variable(self.input_A_mask[:, 3, :, :])
@@ -270,6 +270,8 @@ class CycleGANModel(BaseModel):
             loss_mask_B = 0
             self.loss_mask_A = 0
             self.loss_mask_B = 0
+            self.real_A_mask_data = self.real_A_mask.data
+            self.real_B_mask_data = self.real_B_mask.data
 
         # Forward cycle loss
         rec_A = self.netG_B(fake_B)

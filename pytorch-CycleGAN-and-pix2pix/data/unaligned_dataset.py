@@ -47,7 +47,7 @@ class UnalignedDataset(BaseDataset):
         B = self.toTensor_normalize(B_img)
 
         # make call to semantic segmentation for producing A_mask
-        if self.opt.lambda_mask > 0.0:
+        if self.opt.lambda_mask > 0.0 or self.opt.add_mask:
             # pdb.set_trace()
             A_map_path = self.get_map_path(A_path, 'A')
             B_map_path = self.get_map_path(B_path, 'B')
@@ -69,7 +69,7 @@ class UnalignedDataset(BaseDataset):
             tmp = B[0, ...] * 0.299 + B[1, ...] * 0.587 + B[2, ...] * 0.114
             B = tmp.unsqueeze(0)
 
-        if self.opt.lambda_mask > 0.0:
+        if self.opt.lambda_mask > 0.0 or self.opt.add_mask:
             return {'A': A, 'A_mask': A_mask, 'B': B, 'B_mask': B_mask,
                     'A_paths': A_path, 'B_paths': B_path}
 
