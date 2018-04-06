@@ -129,6 +129,12 @@ class CycleGANModel(BaseModel):
         real_B = Variable(self.input_B, volatile=True)
         fake_A = self.netG_B(real_B)
 
+        if self.opt.lambda_mask > 0.0 or self.opt.add_mask:
+            self.real_A_mask = Variable(self.input_A_mask[:, :3, :, :])
+            self.real_B_mask = Variable(self.input_B_mask[:, :3, :, :])
+            self.real_A_mask_alpha = Variable(self.input_A_mask[:, 3, :, :])
+            self.real_B_mask_alpha = Variable(self.input_B_mask[:, 3, :, :])
+
         # create copy of fakes for masking
         fake_B_mask = fake_B.clone() if lambda_mask > 0.0 else 0.0
         fake_A_mask = fake_A.clone() if lambda_mask > 0.0 else 0.0
