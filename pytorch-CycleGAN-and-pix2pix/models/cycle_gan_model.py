@@ -239,10 +239,18 @@ class CycleGANModel(BaseModel):
 
         # mask the image back on top during cycle step
         if self.opt.add_mask:
+
+            # normalize into range 0,1 for pixel manipulation
+            rec_A = self.normalize_0_1(rec_A)
+            rec_B = self.normalize_0_1(rec_B)
+
+            # pixel calculations
             rec_A = self.real_A_mask + torch.mul(rec_A, real_A_inverted)
             rec_B = self.real_B_mask + torch.mul(rec_B, real_B_inverted)
 
             # normalize back into range -1,1 for proper visualization and gradient flow
+            rec_A = self.normalize_neg_1_1(rec_A)
+            rec_B = self.normalize_neg_1_1(rec_B)
             self.real_A_mask = self.normalize_neg_1_1(self.real_A_mask)
             self.real_B_mask = self.normalize_neg_1_1(self.real_B_mask)
 
