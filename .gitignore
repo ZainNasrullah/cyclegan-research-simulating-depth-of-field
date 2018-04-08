@@ -2,6 +2,7 @@ dataset-preparation/bokeh/
 dataset-preparation/selfies/
 
 PyTorch-Transfer-Learning-of-VGG19-for-Cifar-10-Dataset/vgg19.npy
+pytorch-CycleGAN-and-pix2pix/vgg19.npy
 
 get-dataset-flickr/bokeh_downloads/
 get-dataset-flickr/iphone_downloads/
