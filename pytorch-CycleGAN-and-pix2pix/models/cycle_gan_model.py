@@ -65,7 +65,7 @@ class CycleGANModel(BaseModel):
                 self.model = VGGnet19()
                 self.model.cuda()
                 self.model.eval()
-                self.criterionVGG19 = torch.nn.MSELoss()
+                self.criterionVGG19 = torch.nn.L1Loss()
                 # normalize for vgg-19
                 self.normalize_vgg19 = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 
@@ -312,12 +312,12 @@ class CycleGANModel(BaseModel):
 
                     vgg_real_A_mask = Variable(self.model(real_A_mask_vgg).data, requires_grad=False)
                     vgg_fake_B_mask = self.model(fake_B_mask_vgg)
-                    loss_mask_A_vgg = self.criterionVGG19(vgg_fake_B_mask, vgg_real_A_mask) * lambda_mask
+                    loss_mask_A_vgg = self.criterionVGG19(vgg_fake_B_mask, vgg_real_A_mask) * lambda_mask * lambda_A
                     self.vgg_loss_A = loss_mask_A_vgg.data[0]
 
                     vgg_real_B_mask = Variable(self.model(real_B_mask_vgg).data, requires_grad=False)
                     vgg_fake_A_mask = self.model(fake_A_mask_vgg)
-                    loss_mask_B_vgg = self.criterionVGG19(vgg_fake_A_mask, vgg_real_B_mask) * lambda_mask
+                    loss_mask_B_vgg = self.criterionVGG19(vgg_fake_A_mask, vgg_real_B_mask) * lambda_mask * lambda_B
                     self.vgg_loss_B = loss_mask_B_vgg.data[0]
 
             # store values for errors and visualization
