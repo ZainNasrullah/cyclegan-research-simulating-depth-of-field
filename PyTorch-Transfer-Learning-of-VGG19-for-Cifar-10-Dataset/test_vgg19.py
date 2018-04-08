@@ -3,8 +3,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import utils
-import argparse
+# import utils
+# import argparse
 
 vgg19_npy_path = './vgg19.npy'
 
@@ -65,7 +65,7 @@ class VGGnet(nn.Module):
 # model.cuda()
 # model.eval()
 
-image = utils.load_image(args.test)
+#image = utils.load_image(args.test)
 #image = image[:, :, ::-1]
 #VGG_MEAN = np.array([103.939, 116.779, 123.68])
 #image = (image * 255.0) - VGG_MEAN

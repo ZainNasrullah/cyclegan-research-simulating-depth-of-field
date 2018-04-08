@@ -3,13 +3,29 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import utils
-import argparse
+from torchvision import models
+# import utils
+# import argparse
 
 vgg19_npy_path = './vgg19.npy'
+original_model = models.vgg19(pretrained=True)
 
+
+class VGGnet19(nn.Module):
+    def __init__(self):
+        super(VGGnet19, self).__init__()
+        self.features = nn.Sequential(
+            # stop at conv4
+            *list(original_model.features.children())[:14]
+        )
+
+    def forward(self, x):
+        x = self.features(x)
+        return x
 
 # Model
+
+
 class VGGnet(nn.Module):
     def __init__(self):
         super(VGGnet, self).__init__()
@@ -61,9 +77,9 @@ class VGGnet(nn.Module):
         return x
 
 
-model = VGGnet()
-model.cuda()
-model.eval()
+# model = VGGnet()
+# model.cuda()
+# model.eval()
 
 #image = utils.load_image(args.test)
 #image = image[:, :, ::-1]
@@ -75,7 +91,7 @@ model.eval()
 #input = input.cuda()
 #input_var = torch.autograd.Variable(input, volatile=True)
 
-output = model(input_var.unsqueeze(0))
+# output = model(input_var.unsqueeze(0))
 #output = output.data.cpu().numpy()
 #out = torch.autograd.Variable(torch.from_numpy(output))
 #utils.print_prob(F.softmax(out).data.numpy()[0], './synset.txt')
