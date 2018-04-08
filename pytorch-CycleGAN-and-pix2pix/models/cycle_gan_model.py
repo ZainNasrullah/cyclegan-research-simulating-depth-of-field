@@ -310,14 +310,22 @@ class CycleGANModel(BaseModel):
                     real_A_mask_vgg.data[0] = self.normalize_vgg19(real_A_mask_vgg.data[0])
                     real_B_mask_vgg.data[0] = self.normalize_vgg19(real_B_mask_vgg.data[0])
 
-                    vgg_real_A_mask = Variable(self.model(real_A_mask_vgg).data, requires_grad=False)
-                    vgg_fake_B_mask = self.model(fake_B_mask_vgg)
-                    loss_mask_A_vgg = self.criterionVGG19(vgg_fake_B_mask, vgg_real_A_mask) * lambda_mask * lambda_A
-                    self.vgg_loss_A = loss_mask_A_vgg.data[0]
+                    # extract feature maps at vgg19 relu 3-2
+                    fake_B_mask_vgg = self.model(fake_B_mask_vgg)
+                    fake_A_mask_vgg = self.model(fake_A_mask_vgg)
+                    real_A_mask_vgg = Variable(self.model(real_A_mask_vgg).data, requires_grad=False)
+                    real_B_mask_vgg = Variable(self.model(real_B_mask_vgg).data, requires_grad=False)
 
-                    vgg_real_B_mask = Variable(self.model(real_B_mask_vgg).data, requires_grad=False)
-                    vgg_fake_A_mask = self.model(fake_A_mask_vgg)
-                    loss_mask_B_vgg = self.criterionVGG19(vgg_fake_A_mask, vgg_real_B_mask) * lambda_mask * lambda_B
+                    # normalize back into -1,1 range
+                    fake_B_mask_vgg = self.normalize_neg_1_1(fake_B_mask_vgg)
+                    fake_A_mask_vgg = self.normalize_neg_1_1(fake_A_mask_vgg)
+                    real_A_mask_vgg = self.normalize_neg_1_1(real_A_mask_vgg)
+                    real_B_mask_vgg = self.normalize_neg_1_1(real_B_mask_vgg)
+
+                    # calculate loss
+                    loss_mask_A_vgg = self.criterionVGG19(fake_B_mask_vgg, real_A_mask_vgg) * lambda_mask
+                    loss_mask_B_vgg = self.criterionVGG19(fake_A_mask_vgg, real_B_mask_vgg) * lambda_mask
+                    self.vgg_loss_A = loss_mask_A_vgg.data[0]
                     self.vgg_loss_B = loss_mask_B_vgg.data[0]
 
             # store values for errors and visualization
