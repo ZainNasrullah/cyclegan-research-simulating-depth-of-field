@@ -7,6 +7,7 @@ from util.image_pool import ImagePool
 from .base_model import BaseModel
 from . import networks
 import pdb
+from test_vgg19 import VGGnet
 
 
 class CycleGANModel(BaseModel):
@@ -56,6 +57,13 @@ class CycleGANModel(BaseModel):
             self.criterionCycle = torch.nn.L1Loss()  # cycle loss
             self.criterionIdt = torch.nn.L1Loss()  # identity loss
             self.criterionMask = torch.nn.L1Loss()  # identity loss
+
+            # whether to use vgg19 loss
+            if opt.vgg19_loss:
+                self.model = VGGnet()
+                self.model.cuda()
+                self.model.eval()
+                self.criterionVGG19 = torch.nn.MSELoss()
 
             # optimizer for generators (both A and B)
             self.optimizer_G = torch.optim.Adam(itertools.chain(self.netG_A.parameters(), self.netG_B.parameters()),
@@ -277,10 +285,20 @@ class CycleGANModel(BaseModel):
             fake_B_mask = self.normalize_neg_1_1(fake_B_mask)
             fake_A_mask = self.normalize_neg_1_1(fake_A_mask)
 
-            if self.opt.isTrain:
+            if self.opt.isTrain and self.opt.vgg19_loss is False:
                 # calculate the loss between the real and fake masks
                 loss_mask_A = self.criterionMask(fake_B_mask, self.real_A_mask) * lambda_A * lambda_mask
                 loss_mask_B = self.criterionMask(fake_A_mask, self.real_B_mask) * lambda_B * lambda_mask
+            elif self.opt.isTrain:
+                # subtract VGG_means
+                VGG_mean = torch.cuda.FloatTensor([123.68, 116.779, 103.939])
+                vgg_real_A_mask = self.model(((self.real_A_mask + 1) / 2.0 * 255.0) - VGG_mean)
+                vgg_fake_B_mask = self.model(((self.fake_B_mask + 1) / 2.0 * 255.0) - VGG_mean)
+                loss_mask_A = self.criterionVGG19(vgg_real_A_mask, vgg_fake_B_mask) * lambda_mask
+
+                vgg_real_B_mask = self.model(((self.real_B_mask + 1) / 2.0 * 255.0) - VGG_mean)
+                vgg_fake_A_mask = self.model(((self.fake_A_mask + 1) / 2.0 * 255.0) - VGG_mean)
+                loss_mask_B = self.criterionVGG19(vgg_real_B_mask, vgg_fake_A_mask) * lambda_mask
 
             # store values for errors and visualization
             self.real_A_mask_data = self.real_A_mask.data

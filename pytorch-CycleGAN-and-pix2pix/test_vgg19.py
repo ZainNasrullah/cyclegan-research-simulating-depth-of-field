@@ -61,11 +61,11 @@ class VGGnet(nn.Module):
         return x
 
 
-# model = VGGnet()
-# model.cuda()
-# model.eval()
+model = VGGnet()
+model.cuda()
+model.eval()
 
-image = utils.load_image(args.test)
+#image = utils.load_image(args.test)
 #image = image[:, :, ::-1]
 #VGG_MEAN = np.array([103.939, 116.779, 123.68])
 #image = (image * 255.0) - VGG_MEAN
@@ -75,7 +75,7 @@ image = utils.load_image(args.test)
 #input = input.cuda()
 #input_var = torch.autograd.Variable(input, volatile=True)
 
-# output = model(input_var.unsqueeze(0))
+output = model(input_var.unsqueeze(0))
 #output = output.data.cpu().numpy()
 #out = torch.autograd.Variable(torch.from_numpy(output))
 #utils.print_prob(F.softmax(out).data.numpy()[0], './synset.txt')
