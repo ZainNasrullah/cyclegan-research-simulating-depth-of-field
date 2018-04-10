@@ -187,14 +187,15 @@ class CycleGANModel(BaseModel):
             if self.opt.isTrain:
                 loss_idt_B = self.criterionIdt(idt_B, self.real_A) * lambda_A * lambda_idt
                 loss_idt_A = self.criterionIdt(idt_A, self.real_B) * lambda_B * lambda_idt
+
+                self.idt_A = idt_A.data
+                self.idt_B = idt_B.data
+                self.loss_idt_A = loss_idt_A.data[0]
+                self.loss_idt_B = loss_idt_B.data[0]
             else:
                 loss_idt_B = 0
                 loss_idt_A = 0
 
-            self.idt_A = idt_A.data
-            self.idt_B = idt_B.data
-            self.loss_idt_A = loss_idt_A.data[0]
-            self.loss_idt_B = loss_idt_B.data[0]
         else:
             loss_idt_A = 0
             loss_idt_B = 0
@@ -233,12 +234,12 @@ class CycleGANModel(BaseModel):
             fake_B = self.normalize_neg_1_1(fake_B)
             fake_A = self.normalize_neg_1_1(fake_A)
 
-        # predict real or fake
-        pred_fake_A = self.netD_A(fake_B)
-        pred_fake_B = self.netD_B(fake_A)
-
-        # GAN loss
         if self.opt.isTrain:
+            # predict real or fake
+            pred_fake_A = self.netD_A(fake_B)
+            pred_fake_B = self.netD_B(fake_A)
+
+            # GAN loss
             loss_G_A = self.criterionGAN(pred_fake_A, True)
             loss_G_B = self.criterionGAN(pred_fake_B, True)
         else:
@@ -357,10 +358,11 @@ class CycleGANModel(BaseModel):
         self.rec_A = rec_A.data
         self.rec_B = rec_B.data
 
-        self.loss_G_A = loss_G_A.data[0]
-        self.loss_G_B = loss_G_B.data[0]
-        self.loss_cycle_A = loss_cycle_A.data[0]
-        self.loss_cycle_B = loss_cycle_B.data[0]
+        if self.opt.isTrain:
+            self.loss_G_A = loss_G_A.data[0]
+            self.loss_G_B = loss_G_B.data[0]
+            self.loss_cycle_A = loss_cycle_A.data[0]
+            self.loss_cycle_B = loss_cycle_B.data[0]
 
     def optimize_parameters(self):
         # forward
