@@ -243,11 +243,11 @@ def create_map_dataset(model, inputFolder, outputFolder):
 
 
 model = create_segmentation_model()
-inputFolder = "../datasets/selfie2bokeh/trainA"
+inputFolder = "../datasets/selfie2bokeh/testA"
 outputFolder = "../datasets/selfie2bokeh/maskA"
 create_map_dataset(model, inputFolder, outputFolder)
 
-inputFolder = "../datasets/selfie2bokeh/trainB"
+inputFolder = "../datasets/selfie2bokeh/testB"
 outputFolder = "../datasets/selfie2bokeh/maskB"
 create_map_dataset(model, inputFolder, outputFolder)
 '''

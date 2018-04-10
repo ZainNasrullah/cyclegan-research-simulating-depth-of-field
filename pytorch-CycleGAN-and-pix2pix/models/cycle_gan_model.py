@@ -178,7 +178,7 @@ class CycleGANModel(BaseModel):
         lambda_B = self.opt.lambda_B
 
         # Identity loss
-        if lambda_idt > 0:
+        if lambda_idt > 0 and self.opt.isTrain:
             # G should be identity if real image is fed.
             idt_A = self.netG_A(self.real_B)
             idt_B = self.netG_B(self.real_A)
@@ -210,6 +210,7 @@ class CycleGANModel(BaseModel):
         fake_B_mask = fake_B.clone() if lambda_mask > 0.0 else 0.0
         fake_A_mask = fake_A.clone() if lambda_mask > 0.0 else 0.0
 
+        # mask the image back on top during forward step
         if self.opt.add_mask:
 
             # save copy of fake B for visualization
@@ -294,6 +295,8 @@ class CycleGANModel(BaseModel):
                 # calculate the loss between the real and fake masks
                 loss_mask_A = self.criterionMask(fake_B_mask, self.real_A_mask) * lambda_A * lambda_mask
                 loss_mask_B = self.criterionMask(fake_A_mask, self.real_B_mask) * lambda_B * lambda_mask
+                self.loss_mask_A = loss_mask_A.data[0]
+                self.loss_mask_B = loss_mask_B.data[0]
                 loss_mask_A_vgg = 0
                 loss_mask_B_vgg = 0
 
@@ -334,8 +337,7 @@ class CycleGANModel(BaseModel):
             self.real_B_mask_data = self.real_B_mask.data
             self.mask_A = fake_B_mask.data
             self.mask_B = fake_A_mask.data
-            self.loss_mask_A = loss_mask_A.data[0]
-            self.loss_mask_B = loss_mask_B.data[0]
+
         else:
             # store values for errors and visualization
             loss_mask_A = 0
