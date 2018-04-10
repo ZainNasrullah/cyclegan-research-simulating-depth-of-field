@@ -7,6 +7,9 @@ from util.image_pool import ImagePool
 from .base_model import BaseModel
 from . import networks
 import pdb
+from test_vgg19 import VGGnet, VGGnet19
+import torchvision.models as models
+import torchvision.transforms as transforms
 
 
 class CycleGANModel(BaseModel):
@@ -56,6 +59,15 @@ class CycleGANModel(BaseModel):
             self.criterionCycle = torch.nn.L1Loss()  # cycle loss
             self.criterionIdt = torch.nn.L1Loss()  # identity loss
             self.criterionMask = torch.nn.L1Loss()  # identity loss
+
+            # whether to use vgg19 loss
+            if opt.vgg19_loss:
+                self.model = VGGnet19()
+                self.model.cuda()
+                self.model.eval()
+                self.criterionVGG19 = torch.nn.L1Loss()
+                # normalize for vgg-19
+                self.normalize_vgg19 = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 
             # optimizer for generators (both A and B)
             self.optimizer_G = torch.optim.Adam(itertools.chain(self.netG_A.parameters(), self.netG_B.parameters()),
@@ -282,6 +294,40 @@ class CycleGANModel(BaseModel):
                 # calculate the loss between the real and fake masks
                 loss_mask_A = self.criterionMask(fake_B_mask, self.real_A_mask) * lambda_A * lambda_mask
                 loss_mask_B = self.criterionMask(fake_A_mask, self.real_B_mask) * lambda_B * lambda_mask
+                loss_mask_A_vgg = 0
+                loss_mask_B_vgg = 0
+
+                if self.opt.vgg19_loss:
+
+                    # convert into 0, 1 range
+                    fake_B_mask_vgg = self.normalize_0_1(fake_B_mask)
+                    fake_A_mask_vgg = self.normalize_0_1(fake_A_mask)
+                    real_A_mask_vgg = self.normalize_0_1(self.real_A_mask)
+                    real_B_mask_vgg = self.normalize_0_1(self.real_B_mask)
+
+                    # mean and standard deviation shift for vgg19 model pretrained on imagenet
+                    fake_B_mask_vgg.data[0] = self.normalize_vgg19(fake_B_mask_vgg.data[0])
+                    fake_A_mask_vgg.data[0] = self.normalize_vgg19(fake_A_mask_vgg.data[0])
+                    real_A_mask_vgg.data[0] = self.normalize_vgg19(real_A_mask_vgg.data[0])
+                    real_B_mask_vgg.data[0] = self.normalize_vgg19(real_B_mask_vgg.data[0])
+
+                    # extract feature maps at vgg19 relu 3-2
+                    fake_B_mask_vgg = self.model(fake_B_mask_vgg)
+                    fake_A_mask_vgg = self.model(fake_A_mask_vgg)
+                    real_A_mask_vgg = Variable(self.model(real_A_mask_vgg).data, requires_grad=False)
+                    real_B_mask_vgg = Variable(self.model(real_B_mask_vgg).data, requires_grad=False)
+
+                    # normalize back into -1,1 range
+                    fake_B_mask_vgg = self.normalize_neg_1_1(fake_B_mask_vgg)
+                    fake_A_mask_vgg = self.normalize_neg_1_1(fake_A_mask_vgg)
+                    real_A_mask_vgg = self.normalize_neg_1_1(real_A_mask_vgg)
+                    real_B_mask_vgg = self.normalize_neg_1_1(real_B_mask_vgg)
+
+                    # calculate loss
+                    loss_mask_A_vgg = self.criterionVGG19(fake_B_mask_vgg, real_A_mask_vgg) * lambda_mask
+                    loss_mask_B_vgg = self.criterionVGG19(fake_A_mask_vgg, real_B_mask_vgg) * lambda_mask
+                    self.vgg_loss_A = loss_mask_A_vgg.data[0]
+                    self.vgg_loss_B = loss_mask_B_vgg.data[0]
 
             # store values for errors and visualization
             self.real_A_mask_data = self.real_A_mask.data
@@ -302,7 +348,7 @@ class CycleGANModel(BaseModel):
 
         # combined loss
         if self.opt.isTrain:
-            loss_G = loss_G_A + loss_G_B + loss_cycle_A + loss_cycle_B + loss_idt_A + loss_idt_B + loss_mask_A + loss_mask_B
+            loss_G = loss_G_A + loss_G_B + loss_cycle_A + loss_cycle_B + loss_idt_A + loss_idt_B + loss_mask_A + loss_mask_B + loss_mask_A_vgg + loss_mask_B_vgg
             loss_G.backward()
         else:
             loss_G = 0
@@ -343,6 +389,9 @@ class CycleGANModel(BaseModel):
         if self.opt.lambda_mask > 0.0:
             ret_errors['mask_A'] = self.loss_mask_A
             ret_errors['mask_B'] = self.loss_mask_B
+        if self.opt.vgg19_loss:
+            ret_errors['vgg_loss_A'] = self.vgg_loss_A
+            ret_errors['vgg_loss_B'] = self.vgg_loss_B
         return ret_errors
 
     def get_current_visuals(self):

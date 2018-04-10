@@ -44,6 +44,8 @@ class TrainOptions(BaseOptions):
         self.parser.add_argument(
             '--lambda_mask', type=float, default=0.0, help='weight for mask regularization')
         self.parser.add_argument(
+            '--vgg19_loss', action='store_true', help='whether to use vgg19 as the loss for the mask')
+        self.parser.add_argument(
             '--add_mask', action='store_true', help='whether to mask over generator output before passing to discriminator')
 
         self.parser.add_argument('--lambda_identity', type=float, default=0.5,
