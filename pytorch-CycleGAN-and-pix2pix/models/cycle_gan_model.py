@@ -7,8 +7,7 @@ from util.image_pool import ImagePool
 from .base_model import BaseModel
 from . import networks
 import pdb
-from test_vgg19 import VGGnet, VGGnet19
-import torchvision.models as models
+from vgg19 import VGGnet19
 import torchvision.transforms as transforms
 
 
