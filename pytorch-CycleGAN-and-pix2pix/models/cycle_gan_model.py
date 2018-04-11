@@ -343,6 +343,8 @@ class CycleGANModel(BaseModel):
             loss_mask_B = 0
             self.loss_mask_A = 0
             self.loss_mask_B = 0
+            loss_mask_A_vgg = 0
+            loss_mask_B_vgg = 0
             if self.opt.add_mask:
                 self.real_A_mask_data = self.real_A_mask.data
                 self.real_B_mask_data = self.real_B_mask.data
