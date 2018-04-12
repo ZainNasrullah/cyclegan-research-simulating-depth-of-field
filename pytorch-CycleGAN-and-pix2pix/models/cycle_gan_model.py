@@ -134,7 +134,6 @@ class CycleGANModel(BaseModel):
             self.real_B_mask_alpha = Variable(self.input_B_mask[:, 3, :, :])
 
     def test(self):
-
         self.forward()
         self.backward_G()
 

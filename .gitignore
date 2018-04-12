@@ -1,3 +1,5 @@
+*.sublime-workspace
+
 dataset-preparation/bokeh/
 dataset-preparation/selfies/
 
