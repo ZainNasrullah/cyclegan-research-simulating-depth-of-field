@@ -8,7 +8,6 @@ from matplotlib import pyplot as plt
 import numpy as np
 from PIL import Image
 import cv2
-import pdb
 
 import tensorflow as tf
 
@@ -108,9 +107,9 @@ def label_to_color_image(label):
     return colormap[label]
 
 
-def vis_segmentation(image, seg_map):
+def vis_segmentation(image, seg_map, save=False):
     """Visualizes input image, segmentation map and overlay view."""
-    plt.figure(figsize=(15, 5))
+    figure = plt.figure(figsize=(15, 5))
     grid_spec = gridspec.GridSpec(1, 4, width_ratios=[6, 6, 6, 6])
 
     # plot original image
@@ -151,22 +150,29 @@ def vis_segmentation(image, seg_map):
 
     # gaussian blur
     image_blurred_gaussian = cv2.GaussianBlur(image_cv, (9, 9), 0)
-    ax = plt.subplot(grid_spec[3])
+    plt.subplot(grid_spec[3])
     plt.imshow(image_blurred_gaussian)
     plt.imshow(image_masked)
     plt.axis('off')
     plt.title('gaussian blur')
 
-    plt.show()
+    if save:
+        return figure
+    else:
+        plt.show()
 
 
-def run_visualization(model, image):
+def run_visualization(model, image, save=False):
     """Inferences DeepLab model and visualizes result."""
     print('running deeplab on image %s...' % image)
     orignal_im = Image.open(image)
     resized_im, seg_map = model.run(orignal_im)
 
-    vis_segmentation(resized_im, seg_map)
+    if save:
+        figure = vis_segmentation(resized_im, seg_map, save=save)
+        return figure
+    else:
+        vis_segmentation(resized_im, seg_map)
 
 
 # LABEL_NAMES = np.asarray([
@@ -242,14 +248,27 @@ def create_map_dataset(model, inputFolder, outputFolder):
         mask.save(os.path.join(outputFolder, image), "png")
 
 
-model = create_segmentation_model()
-inputFolder = "../datasets/selfie2bokeh/testA"
-outputFolder = "../datasets/selfie2bokeh/maskA"
-create_map_dataset(model, inputFolder, outputFolder)
+def create_masks():
+    model = create_segmentation_model()
+    inputFolder = "../datasets/selfie2bokeh/testA"
+    outputFolder = "../datasets/selfie2bokeh/maskA"
+    create_map_dataset(model, inputFolder, outputFolder)
 
-inputFolder = "../datasets/selfie2bokeh/testB"
-outputFolder = "../datasets/selfie2bokeh/maskB"
-create_map_dataset(model, inputFolder, outputFolder)
+    inputFolder = "../datasets/selfie2bokeh/testB"
+    outputFolder = "../datasets/selfie2bokeh/maskB"
+    create_map_dataset(model, inputFolder, outputFolder)
+
+
+def run_tests(inputFolder, outputFolder):
+    images = os.listdir(inputFolder)
+    model = create_segmentation_model()
+
+    for image in images:
+        result = run_visualization(model, os.path.join(inputFolder, image), save=True)
+        result.savefig(os.path.join(outputFolder, image))
+
+
+run_tests(r'Z:\CV-Project\pytorch-CycleGAN-and-pix2pix\datasets\selfie2bokeh\testA', r'Z:\CV-Project\pytorch-CycleGAN-and-pix2pix\results\selfie2bokeh_conventional')
 '''
 model = create_segmentation_model()
 image = 'iphone_downloaded__2.jpg'
