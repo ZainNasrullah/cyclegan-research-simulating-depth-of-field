@@ -2,19 +2,14 @@
 
 dataset-preparation/bokeh/
 dataset-preparation/selfies/
-
-PyTorch-Transfer-Learning-of-VGG19-for-Cifar-10-Dataset/vgg19.npy
-pytorch-CycleGAN-and-pix2pix/vgg19.npy
+flickr-api-key.txt
 
 get-dataset-flickr/bokeh_downloads/
 get-dataset-flickr/iphone_downloads/
 
+pytorch-CycleGAN-and-pix2pix/vgg19.npy
 pytorch-CycleGAN-and-pix2pix/deeplab/deeplabv3_pascal_trainval/
 pytorch-CycleGAN-and-pix2pix/deeplab/mobilenetv2_coco_voctrainaug/
 pytorch-CycleGAN-and-pix2pix/deeplab/xception_coco_voctrainval/
-
-CycleGAN-TensorFlow/data/
-CycleGAN-TensorFlow/checkpoints/
-
 pytorch-CycleGAN-and-pix2pix/datasets/
 pytorch-CycleGAN-and-pix2pix/checkpoints/

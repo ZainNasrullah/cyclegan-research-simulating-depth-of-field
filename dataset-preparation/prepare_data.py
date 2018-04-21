@@ -33,7 +33,6 @@ def main(args):
             continue
 
         # resize to specified size
-        #im.thumbnail(resize_to, Image.ANTIALIAS)
         im = ImageOps.fit(im, resize_to, Image.ANTIALIAS)
         im.save(os.path.join(out_dir, file), "JPEG")
 
