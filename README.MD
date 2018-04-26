@@ -1,5 +1,6 @@
 # Shallow Depth of Field in Portraits Using Generative Models
 > **Code Available**: https://github.com/ZainNasrullah/CV-DoF-Research
+
 The aim of this work was to explore how generative models can be improved at the task of simulating a shallow depth of field. To this end, the original CycleGAN implementation is extended with additional loss terms and strategies to guide training. Technical details can be found in the pdf or presentation attached.
 
 An abstract is presented below:
