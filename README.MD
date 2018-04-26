@@ -8,7 +8,7 @@ computing the loss between masks of the subject in a real image and its correspo
 places a mask of the real image’s subject on top of the generator output. Instead of preservation, the generator focuses solely on smoothing the background while the segmentation mask preserves the subject. This method improves cycle-consistency but also introduces artifacts
 into the generated image. Interestingly, combining these seemingly contradictory approaches during training yields the best result in terms of subject preservation (the mask overlay is not used at test time) at the expense of generating a few artifacts. Additionally, as an unintended consequence, this combined model began generating peculiar results where backgrounds of images were stylized or contained imagined objects.
 
-Since this research used many pre-existing works, I'll specify which files were heavily modified:
+Since this research built upon pre-existing works, files that were heavily modified include:
 - Loss calculations and training visualizations added to pytorch-CycleGAN-and-pix2pix\models\cycle_gan_model.py (adapted from https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix). Data loaders and training options are also modified for use with mask losses and segmentation masks.
 - Segmentation mask generation from DeepLabv3 (adapted from the deeplab demo https://colab.research.google.com/github/tensorflow/models/blob/master/research/deeplab/deeplab_demo.ipynb) and manual smoothing visualizaitons in pytorch-CycleGAN-and-pix2pix\deeplab\inference.py
 - Flickr Image Downloader is adapted from https://github.com/nagash91/python-flickr-image-downloader and modified for use in this project (inclusion of camera type)
