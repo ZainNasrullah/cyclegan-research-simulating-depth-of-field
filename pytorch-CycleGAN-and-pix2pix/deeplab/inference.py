@@ -175,18 +175,6 @@ def run_visualization(model, image, save=False):
         vis_segmentation(resized_im, seg_map)
 
 
-# LABEL_NAMES = np.asarray([
-#     'background', 'aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus',
-#     'car', 'cat', 'chair', 'cow', 'diningtable', 'dog', 'horse', 'motorbike',
-#     'person', 'pottedplant', 'sheep', 'sofa', 'train', 'tv'
-# ])
-
-# FULL_LABEL_MAP = np.arange(len(LABEL_NAMES)).reshape(len(LABEL_NAMES), 1)
-# FULL_COLOR_MAP = label_to_color_image(FULL_LABEL_MAP)
-
-
-# Load Model
-# ['mobilenetv2_coco_voctrainaug', 'mobilenetv2_coco_voctrainval', 'xception_coco_voctrainaug', 'xception_coco_voctrainval']
 def create_segmentation_model(input_size=256):
     MODEL_NAME = 'xception_coco_voctrainval'
 
@@ -216,13 +204,6 @@ def create_segmentation_model(input_size=256):
         print('download completed! loading DeepLab model...')
 
     return DeepLabModel(download_path, input_size)
-
-
-'''
-def create_segmentation_visualization(model, image):
-    image = 'iphone_downloaded__2.jpg'
-    run_visualization(model, image)
-'''
 
 
 def create_segmentation_map(model, image):
@@ -269,8 +250,3 @@ def run_tests(inputFolder, outputFolder):
 
 
 run_tests(r'Z:\CV-Project\pytorch-CycleGAN-and-pix2pix\datasets\selfie2bokeh\testA', r'Z:\CV-Project\pytorch-CycleGAN-and-pix2pix\results\selfie2bokeh_conventional')
-'''
-model = create_segmentation_model()
-image = 'iphone_downloaded__2.jpg'
-run_visualization(model, image)
-create_segmentation_map(model, image)'''

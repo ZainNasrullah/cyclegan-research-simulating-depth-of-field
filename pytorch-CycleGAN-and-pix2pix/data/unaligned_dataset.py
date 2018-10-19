@@ -40,8 +40,8 @@ class UnalignedDataset(BaseDataset):
         A_img = Image.open(A_path).convert('RGB')
         B_img = Image.open(B_path).convert('RGB')
 
-        #A = self.transform(A_img)
-        #B = self.transform(B_img)
+        # A = self.transform(A_img)
+        # B = self.transform(B_img)
 
         A = self.toTensor_normalize(A_img)
         B = self.toTensor_normalize(B_img)

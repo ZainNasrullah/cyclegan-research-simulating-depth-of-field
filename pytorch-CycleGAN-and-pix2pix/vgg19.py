@@ -1,8 +1,4 @@
-import cv2
-import numpy as np
-import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from torchvision import models
 
 vgg19_npy_path = './vgg19.npy'
