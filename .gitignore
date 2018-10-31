@@ -1,3 +1,4 @@
+*.sublime-project
 *.sublime-workspace
 
 dataset-preparation/bokeh/
@@ -13,3 +14,10 @@ pytorch-CycleGAN-and-pix2pix/deeplab/mobilenetv2_coco_voctrainaug/
 pytorch-CycleGAN-and-pix2pix/deeplab/xception_coco_voctrainval/
 pytorch-CycleGAN-and-pix2pix/datasets/
 pytorch-CycleGAN-and-pix2pix/checkpoints/
+
+selfie2bokeh/vgg19.npy
+selfie2bokeh/deeplab/deeplabv3_pascal_trainval/
+selfie2bokeh/deeplab/mobilenetv2_coco_voctrainaug/
+selfie2bokeh/deeplab/xception_coco_voctrainval/
+selfie2bokeh/datasets/
+selfie2bokeh/checkpoints/
