@@ -1,7 +1,9 @@
 # Shallow Depth of Field in Portraits Using Generative Models
 > **Code Available**: https://github.com/ZainNasrullah/cyclegan-research-simulating-depth-of-field
 
-The aim of this work was to explore how generative models can be improved at the task of simulating a shallow depth of field. To this end, the original CycleGAN implementation is extended with additional loss terms and strategies to guide training. Technical details can be found in the pdf or presentation attached.
+The aim of this work was to explore how generative models can be improved at the task of simulating a shallow depth of field in human portraits. To this end, the original CycleGAN implementation is extended with additional loss terms and strategies to guide training. 
+
+**Full details can be found in the [technical pdf](https://github.com/ZainNasrullah/cyclegan-research-simulating-depth-of-field/blob/master/simulating-shallow-depth.pdf) or [summary presentation](https://github.com/ZainNasrullah/cyclegan-research-simulating-depth-of-field/blob/master/Shallow%20Depth%20of%20Field%20Using%20Generative%20Models.pptx) in this repo.**
 
 An abstract is presented below:
 > In response to the recent use of machine learning to create shallow depth of field images, this paper explores a generative approach to this task. While preliminary work in unpaired image translation has already explored this topic, prior methods are not able to reliably preserve the subject of an image and also have not been extended to pictures featuring people. For these reasons, this work introduces a novel portrait dataset containing images with and without a shallow depth of field. It further establishes a baseline, for visual comparison, using
